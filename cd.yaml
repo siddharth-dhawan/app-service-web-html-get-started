@@ -30,6 +30,7 @@ stages:
         packageForLinux: '$(System.DefaultWorkingDirectory)'
   
 - stage: Deploy_To_Prod
+  condition: contains(variables['build.sourceBranch'], 'refs/heads/master')
   jobs:
   - job: CD_PROD
     steps:
