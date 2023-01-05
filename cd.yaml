@@ -4,6 +4,9 @@ resources:
     source: Adnoc-CI 
     trigger: true
 
+pr:
+- master
+
 pool:
   vmImage: ubuntu-latest
 
