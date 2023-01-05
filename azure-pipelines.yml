@@ -25,6 +25,7 @@ stages:
       artifact: build-artifact
 
 - stage: Deploy_To_Dev
+  dependsOn: Build
   jobs:
   - job: CD_DEV
     steps:
@@ -37,6 +38,7 @@ stages:
         packageForLinux: '$(System.DefaultWorkingDirectory)'
 
 - stage: Deploy_To_Prod
+  condition: contains(variables['build.sourceBranch'], 'refs/heads/main')
   jobs:
   - job: CD_PROD
     steps:
