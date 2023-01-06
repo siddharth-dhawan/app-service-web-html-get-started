@@ -6,7 +6,7 @@ stages:
 - stage: Deploy_To_Dev
   jobs:
   - deployment: Deploy_to_Dev
-    environment: DEV
+    environment: Development
     strategy:
       runOnce:
         deploy:
@@ -32,9 +32,9 @@ stages:
 - stage: Deploy_To_Prod
   condition: eq(variables['build.sourceBranch'], 'refs/heads/master')
   jobs:
-  - job: CD_PROD
-  - deployment: Deploy_to_Dev
-    environment: DEV
+  - job: 
+  - deployment: Deploy_to_Prod
+    environment: Production
     strategy:
       runOnce:
         deploy:
