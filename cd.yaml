@@ -4,47 +4,55 @@ pool:
 
 stages:
 - stage: Deploy_To_Dev
-  condition: eq(variables['build.sourceBranch'], 'refs/heads/development')
   jobs:
-  - job: CD_DEV
-    steps:
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        buildType: 'specific'
-        project: '4e02bc03-982b-4494-9a4e-c7f8ef568388'
-        definition: '10'
-        specificBuildWithTriggering: true
-        buildVersionToDownload: 'latest'
-        artifactName: 'drop'
-        targetPath: '$(Build.ArtifactStagingDirectory)'
+  - deployment: Deploy_to_Dev
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'specific'
+              project: '4e02bc03-982b-4494-9a4e-c7f8ef568388'
+              definition: '10'
+              specificBuildWithTriggering: true
+              buildVersionToDownload: 'latest'
+              artifactName: 'drop'
+              targetPath: '$(Build.ArtifactStagingDirectory)'
     
-    - task: AzureRmWebAppDeployment@4
-      inputs:
-        ConnectionType: 'AzureRM'
-        azureSubscription: 'Visual Studio Enterprise Subscription(b214611b-9a79-4e7e-afb0-3d9785737f10)'
-        appType: 'webApp'
-        WebAppName: 'devadnocapp'
-        packageForLinux: '$(Build.ArtifactStagingDirectory)'
+          - task: AzureRmWebAppDeployment@4
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'Visual Studio Enterprise Subscription(b214611b-9a79-4e7e-afb0-3d9785737f10)'
+              appType: 'webApp'
+              WebAppName: 'devadnocapp'
+              packageForLinux: '$(Build.ArtifactStagingDirectory)'
   
 - stage: Deploy_To_Prod
   condition: eq(variables['build.sourceBranch'], 'refs/heads/master')
   jobs:
   - job: CD_PROD
-    steps:
-    - task: DownloadPipelineArtifact@2
-      inputs:
-        buildType: 'specific'
-        project: '4e02bc03-982b-4494-9a4e-c7f8ef568388'
-        definition: '10'
-        specificBuildWithTriggering: true
-        buildVersionToDownload: 'latest'
-        artifactName: 'drop'
-        targetPath: '$(Build.ArtifactStagingDirectory)'
-    
-    - task: AzureRmWebAppDeployment@4
-      inputs:
-        ConnectionType: 'AzureRM'
-        azureSubscription: 'Visual Studio Enterprise Subscription(b214611b-9a79-4e7e-afb0-3d9785737f10)'
-        appType: 'webApp'
-        WebAppName: 'prdadnocapp'
-        packageForLinux: '$(Build.ArtifactStagingDirectory)'
+  - deployment: Deploy_to_Dev
+    environment: DEV
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'specific'
+              project: '4e02bc03-982b-4494-9a4e-c7f8ef568388'
+              definition: '10'
+              specificBuildWithTriggering: true
+              buildVersionToDownload: 'latest'
+              artifactName: 'drop'
+              targetPath: '$(Build.ArtifactStagingDirectory)'
+          
+          - task: AzureRmWebAppDeployment@4
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'Visual Studio Enterprise Subscription(b214611b-9a79-4e7e-afb0-3d9785737f10)'
+              appType: 'webApp'
+              WebAppName: 'prdadnocapp'
+              packageForLinux: '$(Build.ArtifactStagingDirectory)'
