@@ -12,7 +12,8 @@ stages:
   - job: CI
 
     steps:
-    - checkout: MyGitHubRepo
+    - checkout: self
+      submodules: true
     - task: CopyFiles@2
       inputs:
         SourceFolder: './'
