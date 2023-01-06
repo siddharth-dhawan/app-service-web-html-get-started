@@ -1,9 +1,12 @@
-trigger: none
+trigger: 
+- '*'
+
 pool:
   vmImage: ubuntu-latest
 
 stages:
 - stage: Deploy_To_Dev
+  condition: eq(variables['build.sourceBranch'], 'refs/heads/development')
   jobs:
   - deployment: Deploy_to_Dev
     environment: Development
